@@ -1,0 +1,126 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+    padding-top: 80px;
+  }
+  
+  /* Navbar */
+  .navbar {
+    background: #333;
+    border-bottom: 2px solid #ff4500;
+  }
+  
+  .navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #ff4500 !important;
+  }
+  
+  .navbar-nav .nav-link {
+    color: #ddd !important;
+    transition: color 0.3s ease-in-out;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    color: #ff4500 !important;
+  }
+  
+  .navbar-nav .dropdown-menu {
+    background: #444;
+  }
+  
+  .navbar-nav .dropdown-item {
+    color: #fff !important;
+  }
+  
+  .navbar-nav .dropdown-item:hover {
+    background: #ff4500;
+    color: #fff !important;
+  }
+  
+  /* Hero Section */
+  .jumbotron {
+    background: linear-gradient(120deg, #ff4500 0%, #ff7e00 100%);
+    color: #fff;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .jumbotron h1 {
+    font-size: 3rem;
+    font-weight: bold;
+  }
+  
+  .jumbotron p {
+    font-size: 1.2rem;
+  }
+  
+  .jumbotron a {
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 10px 20px;
+    background: #fff;
+    color: #ff4500;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+    text-decoration: none;
+  }
+  
+  .jumbotron a:hover {
+    background: #ff4500;
+    color: #fff;
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    background: #ff4500;
+    border: none;
+    transition: background 0.3s ease-in-out;
+  }
+  
+  .btn-primary:hover {
+    background: #cc3700;
+  }
+  
+  /* Footer */
+  footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+  
+  footer a {
+    color: #ff4500;
+    text-decoration: none;
+  }
+  
+  footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Utility Classes */
+  .mt-5 {
+    margin-top: 3rem !important;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 0 15px;
+  }
