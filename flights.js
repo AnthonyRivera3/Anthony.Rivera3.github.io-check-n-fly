@@ -2,6 +2,15 @@ const API_KEY = "XfOTmlIO5vADAxyv87F2obUSRcy84qq2";
 const API_SECRET = "X3yjzEGmyUB9vNeo";
 let accessToken = "";
 
+// Airline website mapping
+const airlineWebsites = {
+    AA: "https://www.aa.com", // American Airlines
+    DL: "https://www.delta.com", // Delta Airlines
+    UA: "https://www.united.com", // United Airlines
+    BA: "https://www.britishairways.com", // British Airways
+    // Add more mappings as needed
+};
+
 // Function to fetch access token
 async function getAccessToken() {
     const url = "https://test.api.amadeus.com/v1/security/oauth2/token";
@@ -126,17 +135,23 @@ async function displayFlightResults(data) {
             card.className = "card mb-3";
 
             let itineraries = offer.itineraries.map(itinerary =>
-                itinerary.segments.map(segment => `
-                    <li class="list-group-item">
-                        <strong>From:</strong> ${segment.departure.iataCode}
-                        <strong>To:</strong> ${segment.arrival.iataCode}
-                        <div class="flight-times">
-                            <strong>Takeoff:</strong> <span>${new Date(segment.departure.at).toLocaleString()}</span>
-                            <strong>Arrival:</strong> <span>${new Date(segment.arrival.at).toLocaleString()}</span>
-                        </div>
-                        <strong>Airline:</strong> ${airlineNames[itinerary.segments.indexOf(segment)]}
-                    </li>
-                `).join("")
+                itinerary.segments.map(segment => {
+                    const airlineCode = segment.carrierCode;
+                    const airlineWebsite = airlineWebsites[airlineCode] || "#";
+
+                    return `
+                        <li class="list-group-item">
+                            <strong>From:</strong> ${segment.departure.iataCode}
+                            <strong>To:</strong> ${segment.arrival.iataCode}
+                            <div class="flight-times">
+                                <strong>Takeoff:</strong> <span>${new Date(segment.departure.at).toLocaleString()}</span>
+                                <strong>Arrival:</strong> <span>${new Date(segment.arrival.at).toLocaleString()}</span>
+                            </div>
+                            <strong>Airline:</strong> ${airlineNames[itinerary.segments.indexOf(segment)]} 
+                            <a href="${airlineWebsite}" target="_blank" class="airline-link">(Website)</a>
+                        </li>
+                    `;
+                }).join("")
             ).join("");
 
             card.innerHTML = `

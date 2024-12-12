@@ -150,7 +150,6 @@ footer a:hover {
   padding: 0 15px;
 }
 
-/* Custom card styling for black background and orange text */
 .card {
   background-color: #000 !important; /* Black background */
   color: #ff4500 !important; /* Orange text */
@@ -178,4 +177,18 @@ footer a:hover {
 /* Improve visibility against the background */
 .card h5.card-title {
   color: #ff4500 !important;
+}
+
+
+/* Airline link styling */
+.airline-link {
+  color: #4ca3dd; /* Light blue */
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.airline-link:hover {
+  text-decoration: underline;
+  color: #3399cc; /* Slightly darker blue on hover */
 }
