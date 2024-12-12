@@ -13,7 +13,7 @@ async function getAccessToken() {
 
     try {
         const response = await fetch(url, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
             },
@@ -53,7 +53,7 @@ async function searchFlights(origin, destination, departureDate) {
 
     try {
         const response = await fetch(url, {
-            method: "GET",
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${accessToken}`,
