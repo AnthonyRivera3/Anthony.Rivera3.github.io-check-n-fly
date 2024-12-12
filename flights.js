@@ -34,11 +34,18 @@ async function getAccessToken() {
 // Event listener for flight search form submission
 document.getElementById('flight-search-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const origin = document.getElementById('origin').value.toUpperCase();
-    const destination = document.getElementById('destination').value.toUpperCase();
+    const origin = document.getElementById('origin').value.toUpperCase().trim();
+    const destination = document.getElementById('destination').value.toUpperCase().trim();
     const departureDate = document.getElementById('departure').value;
     const adults = document.getElementById('adults').value;
     const children = document.getElementById('children').value;
+
+    // Validate that airport codes are exactly 3 letters long
+    if (origin.length !== 3 || destination.length !== 3) {
+        alert("Both origin and destination codes must be exactly 3 letters.");
+        return; // Stop the function if validation fails
+    }
+
     searchFlights(origin, destination, departureDate, adults, children);
 });
 
@@ -115,4 +122,3 @@ function displayFlightResults(data) {
 
 // Fetch access token when the script loads
 getAccessToken();
-
