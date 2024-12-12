@@ -1,4 +1,4 @@
-const API_KEY = "XfOTmlIO5vADAxyv87F2obUSRcy84qq2"; 
+const API_KEY = "XfOTmlIO5vADAxyv87F2obUSRcy84qq2";
 const API_SECRET = "X3yjzEGmyUB9vNeo";
 let accessToken = "";
 
@@ -34,8 +34,8 @@ async function getAccessToken() {
 // Event listener for flight search form submission
 document.getElementById('flight-search-form').addEventListener('submit', function(event) {
     event.preventDefault();
-    const origin = document.getElementById('origin').value;
-    const destination = document.getElementById('destination').value;
+    const origin = document.getElementById('origin').value.toUpperCase();
+    const destination = document.getElementById('destination').value.toUpperCase();
     const departureDate = document.getElementById('departure').value;
     const adults = document.getElementById('adults').value;
     const children = document.getElementById('children').value;
@@ -59,16 +59,20 @@ async function searchFlights(origin, destination, departureDate, adults, childre
     };
     url.search = new URLSearchParams(params).toString();
 
+    console.log("Making API request to:", url.toString());
+
     try {
         const response = await fetch(url, {
             method: "GET",
             headers: {
-                Authorization: `Bearer ${accessToken}`,
+                'Authorization': `Bearer ${accessToken}`,
             }
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error(`Failed to fetch flight data: ${errorText}`);
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
         const data = await response.json();
@@ -111,3 +115,4 @@ function displayFlightResults(data) {
 
 // Fetch access token when the script loads
 getAccessToken();
+
