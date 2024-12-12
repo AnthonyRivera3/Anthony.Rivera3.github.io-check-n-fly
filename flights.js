@@ -42,7 +42,7 @@ document.getElementById('flight-search-form').addEventListener('submit', functio
 
 // Function to search flights based on user input
 async function searchFlights(origin, destination, departureDate) {
-    const url = "https://test.api.amadeus.com/v2/shopping/flight-offers";
+    const url = "https://test.api.amadeus.com/v2/shopping/flight-offers"; // URL without query string
 
     const requestData = {
         originLocationCode: origin,
@@ -106,7 +106,7 @@ function displayFlightResults(data) {
 }
 
 // Fetch access token when the script loads
-getAccessToken(); 
+getAccessToken();
 
 
 
