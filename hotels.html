@@ -6,23 +6,21 @@
     <title>Homepage</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-       <style>
+    <style>
         body { 
-            padding-top: 100px; /* Adjust if navbar is taller */
+            padding-top: 100px;
             background-image: url('hotelpicture.png');
-            background-size: cover; /* Ensures that the background covers the entire viewport */
+            background-size: cover;
             background-position: center center;
             background-attachment: fixed;
-            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-repeat: no-repeat;
         }
         .floating-btn {
-            position: fixed; /* Make button floating */
-            top: 80px; /* Position right below the navbar */
-            right: 20px; /* Maintain a little distance from the edge */
-            z-index: 1030; /* Ensure it's above most other elements */
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1030;
         }
-    
     </style>
 </head>
 <body>
@@ -70,26 +68,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        function searchHotels() {
-            const input = document.getElementById('searchInput').value;
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = ''; // Clear previous results
-
-            // Example: Fetch data from an API (you'll need to replace this URL with your actual API endpoint)
-            fetch(`https://api.example.com/hotels/search?query=${encodeURIComponent(input)}`)
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(hotel => {
-                        const div = document.createElement('div');
-                        div.innerHTML = `<h4>${hotel.name}</h4>
-                                         <p>Rating: ${hotel.rating}</p>
-                                         <p>Location: ${hotel.location}</p>`;
-                        resultsDiv.appendChild(div);
-                    });
-                })
-                .catch(error => console.error('Error fetching hotels:', error));
-        }
-    </script>
+    <script src="hotels.js"></script>
 </body>
 </html>
