@@ -31,94 +31,45 @@ async function getAccessToken() {
     }
 }
 
-// Event listener for flight search form submission
-document.getElementById('flight-search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const origin = document.getElementById('origin').value.toUpperCase().trim();
-    const destination = document.getElementById('destination').value.toUpperCase().trim();
-    const departureDate = document.getElementById('departure').value;
-    const adults = document.getElementById('adults').value;
-    const children = document.getElementById('children').value;
+// Example airports data for autocomplete
+const airports = [
+    { code: "JFK", name: "John F. Kennedy International Airport" },
+    { code: "LAX", name: "Los Angeles International Airport" },
+    { code: "CDG", name: "Charles de Gaulle Airport" },
+    { code: "SFO", name: "San Francisco International Airport" },
+    // Add more airports as needed
+];
 
-    // Validate that airport codes are exactly 3 letters long
-    if (origin.length !== 3 || destination.length !== 3) {
-        alert("Both origin and destination codes must be exactly 3 letters.");
-        return; // Stop the function if validation fails
-    }
+// Setup autocomplete functionality
+function setupAutocomplete(inputElement, suggestionsElement) {
+    inputElement.addEventListener('input', function() {
+        const value = this.value.toUpperCase();
+        suggestionsElement.innerHTML = '';
+        if (!value) return;
 
-    searchFlights(origin, destination, departureDate, adults, children);
-});
+        const filteredAirports = airports.filter(airport =>
+            airport.code.includes(value) || airport.name.toUpperCase().includes(value)
+        );
 
-// Function to search flights based on user input
-async function searchFlights(origin, destination, departureDate, adults, children) {
-    const url = new URL("https://test.api.amadeus.com/v2/shopping/flight-offers");
-    const params = {
-        originLocationCode: origin,
-        destinationLocationCode: destination,
-        departureDate: departureDate,
-        adults: adults,
-        children: children,
-        travelClass: "ECONOMY",
-        nonStop: "false",
-        currencyCode: "USD",
-        maxPrice: "500",
-        max: "10"
-    };
-    url.search = new URLSearchParams(params).toString();
-
-    console.log("Making API request to:", url.toString());
-
-    try {
-        const response = await fetch(url, {
-            method: "GET",
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            }
+        filteredAirports.forEach(airport => {
+            const div = document.createElement('div');
+            div.textContent = `${airport.code} - ${airport.name}`;
+            div.addEventListener('click', () => {
+                inputElement.value = airport.code; // Set the input to the selected airport code
+                suggestionsElement.innerHTML = ''; // Clear suggestions
+            });
+            suggestionsElement.appendChild(div);
         });
+    });
 
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Failed to fetch flight data: ${errorText}`);
-            throw new Error(`HTTP error! Status: ${response.status}`);
+    document.addEventListener('click', function(event) {
+        if (event.target !== inputElement) {
+            suggestionsElement.innerHTML = '';
         }
-
-        const data = await response.json();
-        console.log("Flight data fetched successfully:", data);
-        displayFlightResults(data);
-    } catch (error) {
-        console.error("Error searching flights:", error);
-    }
+    });
 }
 
-// Function to display flight results on the page
-function displayFlightResults(data) {
-    const resultsDiv = document.getElementById("flight-results");
-    resultsDiv.innerHTML = "";
+setupAutocomplete(document.getElementById('origin'), document.getElementById('originSuggestions'));
+setupAutocomplete(document.getElementById('destination'), document.getElementById('destinationSuggestions'));
 
-    if (data && data.data && data.data.length > 0) {
-        const sortedOffers = data.data.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
-
-        sortedOffers.forEach((offer) => {
-            const div = document.createElement("div");
-            div.className = "flight-offer";
-            div.innerHTML = `
-                <p><strong>Price:</strong> ${offer.price.total} ${offer.price.currency}</p>
-                <p><strong>Itinerary:</strong></p>
-                <ul>
-                    ${offer.itineraries.map(itinerary => `
-                        <li>
-                            <strong>From:</strong> ${itinerary.segments[0].departure.iataCode}
-                            <strong>To:</strong> ${itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}
-                            <strong>Date:</strong> ${itinerary.segments[0].departure.at.split("T")[0]}
-                        </li>`).join("")}
-                </ul>
-            `;
-            resultsDiv.appendChild(div);
-        });
-    } else {
-        resultsDiv.innerHTML = "<p>No flights found.</p>";
-    }
-}
-
-// Fetch access token when the script loads
-getAccessToken();
+// Remainder of your JavaScript code...
