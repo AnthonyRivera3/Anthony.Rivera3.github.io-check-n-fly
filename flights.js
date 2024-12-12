@@ -13,11 +13,11 @@ async function getAccessToken() {
 
     try {
         const response = await fetch(url, {
-            method: "POST",
+            method: "POST",  // POST method because we're sending data to get the token
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/x-www-form-urlencoded", // Content-Type for sending URL-encoded form data
             },
-            body: credentials,
+            body: credentials, // Pass URLSearchParams to body
         });
         const data = await response.json();
         if (data.access_token) {
@@ -31,14 +31,16 @@ async function getAccessToken() {
     }
 }
 
+// Event listener for flight search form submission
 document.getElementById('flight-search-form').addEventListener('submit', function(event) {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the form from reloading the page
     const origin = document.getElementById('origin').value;
     const destination = document.getElementById('destination').value;
     const departureDate = document.getElementById('departure').value;
-    searchFlights(origin, destination, departureDate);
+    searchFlights(origin, destination, departureDate); // Call the searchFlights function
 });
 
+// Function to search flights based on user input
 async function searchFlights(origin, destination, departureDate) {
     const url = "https://test.api.amadeus.com/v2/shopping/flight-offers";
 
@@ -53,12 +55,12 @@ async function searchFlights(origin, destination, departureDate) {
 
     try {
         const response = await fetch(url, {
-            method: "POST",
+            method: "POST",  // POST method because you're sending data to request flight offers
             headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json", // Sending JSON data
+                Authorization: `Bearer ${accessToken}`, // Authorization header with the token
             },
-            body: JSON.stringify(requestData),
+            body: JSON.stringify(requestData), // Send the requestData as JSON
         });
 
         if (!response.ok) {
@@ -67,12 +69,13 @@ async function searchFlights(origin, destination, departureDate) {
 
         const data = await response.json();
         console.log("Flight data fetched successfully:", data);
-        displayFlightResults(data);
+        displayFlightResults(data); // Display the flight results
     } catch (error) {
         console.error("Error searching flights:", error);
     }
 }
 
+// Function to display flight results on the page
 function displayFlightResults(data) {
     const resultsDiv = document.getElementById("flight-results");
     resultsDiv.innerHTML = ""; // Clear previous results
@@ -102,6 +105,8 @@ function displayFlightResults(data) {
     }
 }
 
-getAccessToken(); // Initialize by fetching access token
+// Fetch access token when the script loads
+getAccessToken(); 
+
 
 
