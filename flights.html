@@ -8,7 +8,22 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { padding-top: 80px; } /* Add padding to ensure content isn't hidden behind the navbar */
+        
+        body { 
+            padding-top: 100px; /* Adjust if navbar is taller */
+            background-image: url('flightpicture.png');
+            background-size: cover; /* Ensures that the background covers the entire viewport */
+            background-position: center center;
+            background-attachment: fixed;
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+        }
+        .floating-btn {
+            position: fixed; /* Make button floating */
+            top: 80px; /* Position right below the navbar */
+            right: 20px; /* Maintain a little distance from the edge */
+            z-index: 1030; /* Ensure it's above most other elements */
+        }
+    
     </style>
 </head>
 <body>
