@@ -20,7 +20,12 @@ async function getAccessToken() {
             body: credentials,
         });
         const data = await response.json();
-        accessToken = data.access_token;
+        if (data.access_token) {
+            console.log("Access token fetched successfully.");
+            accessToken = data.access_token;
+        } else {
+            console.error("Failed to fetch access token:", data);
+        }
     } catch (error) {
         console.error("Error fetching access token:", error);
     }
@@ -56,9 +61,12 @@ async function searchFlights(origin, destination, departureDate) {
             body: JSON.stringify(requestData),
         });
 
-        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
+        console.log("Flight data fetched successfully:", data);
         displayFlightResults(data);
     } catch (error) {
         console.error("Error searching flights:", error);
@@ -94,5 +102,6 @@ function displayFlightResults(data) {
     }
 }
 
-getAccessToken();  // Initialize by fetching access token
+getAccessToken(); // Initialize by fetching access token
+
 
