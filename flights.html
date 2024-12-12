@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>Flight Search</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,6 +21,12 @@
             top: 80px;
             right: 20px;
             z-index: 1030;
+        }
+        #loadingIndicator {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #ff4500;
         }
     </style>
 </head>
@@ -77,6 +83,7 @@
             <button type="submit">Search Flights</button>
         </form>
 
+        <div id="loadingIndicator">Loading...</div>
         <div id="flight-results"></div>
     </div>
 

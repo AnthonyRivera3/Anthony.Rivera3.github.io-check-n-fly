@@ -31,8 +31,22 @@ async function getAccessToken() {
     }
 }
 
+// Function to fetch airline details
+async function getAirlineName(carrierCode) {
+    const url = `https://test.api.amadeus.com/v1/reference-data/airlines?airlineCodes=${carrierCode}`;
+    const response = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${accessToken}` }
+    });
+    if (!response.ok) {
+        console.error(`Failed to fetch airline data: ${response.statusText}`);
+        return carrierCode;  // Fallback to carrier code if fetch fails
+    }
+    const data = await response.json();
+    return data.data[0].businessName || data.data[0].commonName;  // Adjust based on actual API response
+}
+
 // Event listener for flight search form submission
-document.getElementById('flight-search-form').addEventListener('submit', function(event) {
+document.getElementById('flight-search-form').addEventListener('submit', async function(event) {
     event.preventDefault();
     const origin = document.getElementById('origin').value.toUpperCase().trim();
     const destination = document.getElementById('destination').value.toUpperCase().trim();
@@ -40,17 +54,18 @@ document.getElementById('flight-search-form').addEventListener('submit', functio
     const adults = document.getElementById('adults').value;
     const children = document.getElementById('children').value;
 
-    // Validate that airport codes are exactly 3 letters long
     if (origin.length !== 3 || destination.length !== 3) {
         alert("Both origin and destination codes must be exactly 3 letters.");
         return; // Stop the function if validation fails
     }
 
-    searchFlights(origin, destination, departureDate, adults, children);
+    const flightOffers = await searchFlights(origin, destination, departureDate, adults, children);
+    displayFlightResults(flightOffers);
 });
 
 // Function to search flights based on user input
 async function searchFlights(origin, destination, departureDate, adults, children) {
+    toggleLoadingIndicator(true);  // Show loading indicator
     const url = new URL("https://test.api.amadeus.com/v2/shopping/flight-offers");
     const params = {
         originLocationCode: origin,
@@ -82,32 +97,48 @@ async function searchFlights(origin, destination, departureDate, adults, childre
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log("Flight data fetched successfully:", data);
-        displayFlightResults(data);
+        return await response.json();
     } catch (error) {
         console.error("Error searching flights:", error);
+        return null;  // Return null in case of error
+    } finally {
+        toggleLoadingIndicator(false);  // Hide loading indicator
     }
 }
 
+// Function to toggle loading indicator
+function toggleLoadingIndicator(show) {
+    document.getElementById("loadingIndicator").style.display = show ? "block" : "none";
+}
+
 // Function to display flight results on the page
-function displayFlightResults(data) {
+async function displayFlightResults(data) {
     const resultsDiv = document.getElementById("flight-results");
     resultsDiv.innerHTML = "";
 
     if (data && data.data && data.data.length > 0) {
-        const sortedOffers = data.data.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
-        
-        sortedOffers.forEach((offer) => {
+        for (const offer of data.data) {
+            const airlineNames = await Promise.all(offer.itineraries.flatMap(itinerary =>
+                itinerary.segments.map(segment => getAirlineName(segment.carrierCode))
+            ));
+
             const card = document.createElement("div");
             card.className = "card mb-3";
-            let itineraries = offer.itineraries.map(itinerary => `
-                <li class="list-group-item">
-                    <strong>From:</strong> ${itinerary.segments[0].departure.iataCode} 
-                    <strong>To:</strong> ${itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}
-                    <strong>Date:</strong> ${itinerary.segments[0].departure.at.split("T")[0]}
-                </li>
-            `).join("");
+
+            let itineraries = offer.itineraries.map(itinerary =>
+                itinerary.segments.map(segment => `
+                    <li class="list-group-item">
+                        <strong>From:</strong> ${segment.departure.iataCode}
+                        <strong>To:</strong> ${segment.arrival.iataCode}
+                        <div class="flight-times">
+                            <strong>Takeoff:</strong> <span>${new Date(segment.departure.at).toLocaleString()}</span>
+                            <strong>Arrival:</strong> <span>${new Date(segment.arrival.at).toLocaleString()}</span>
+                        </div>
+                        <strong>Airline:</strong> ${airlineNames[itinerary.segments.indexOf(segment)]}
+                    </li>
+                `).join("")
+            ).join("");
+
             card.innerHTML = `
                 <div class="card-header">Price: ${offer.price.total} ${offer.price.currency}</div>
                 <div class="card-body">
@@ -116,7 +147,7 @@ function displayFlightResults(data) {
                 </div>
             `;
             resultsDiv.appendChild(card);
-        });
+        }
     } else {
         resultsDiv.innerHTML = "<p class='alert alert-warning'>No flights found.</p>";
     }
