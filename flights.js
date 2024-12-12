@@ -97,26 +97,28 @@ function displayFlightResults(data) {
 
     if (data && data.data && data.data.length > 0) {
         const sortedOffers = data.data.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
-
+        
         sortedOffers.forEach((offer) => {
-            const div = document.createElement("div");
-            div.className = "flight-offer";
-            div.innerHTML = `
-                <p><strong>Price:</strong> ${offer.price.total} ${offer.price.currency}</p>
-                <p><strong>Itinerary:</strong></p>
-                <ul>
-                    ${offer.itineraries.map(itinerary => `
-                        <li>
-                            <strong>From:</strong> ${itinerary.segments[0].departure.iataCode}
-                            <strong>To:</strong> ${itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}
-                            <strong>Date:</strong> ${itinerary.segments[0].departure.at.split("T")[0]}
-                        </li>`).join("")}
-                </ul>
+            const card = document.createElement("div");
+            card.className = "card mb-3";
+            let itineraries = offer.itineraries.map(itinerary => `
+                <li class="list-group-item">
+                    <strong>From:</strong> ${itinerary.segments[0].departure.iataCode} 
+                    <strong>To:</strong> ${itinerary.segments[itinerary.segments.length - 1].arrival.iataCode}
+                    <strong>Date:</strong> ${itinerary.segments[0].departure.at.split("T")[0]}
+                </li>
+            `).join("");
+            card.innerHTML = `
+                <div class="card-header">Price: ${offer.price.total} ${offer.price.currency}</div>
+                <div class="card-body">
+                    <h5 class="card-title">Flight Details</h5>
+                    <ul class="list-group list-group-flush">${itineraries}</ul>
+                </div>
             `;
-            resultsDiv.appendChild(div);
+            resultsDiv.appendChild(card);
         });
     } else {
-        resultsDiv.innerHTML = "<p>No flights found.</p>";
+        resultsDiv.innerHTML = "<p class='alert alert-warning'>No flights found.</p>";
     }
 }
 
