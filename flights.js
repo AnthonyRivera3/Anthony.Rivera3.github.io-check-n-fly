@@ -1,4 +1,4 @@
-const API_KEY = "XfOTmlIO5vADAxyv87F2obUSRcy84qq2";
+const API_KEY = "XfOTmlIO5vADAxyv87F2obUSRcy84qq2"; 
 const API_SECRET = "X3yjzEGmyUB9vNeo";
 let accessToken = "";
 
@@ -13,11 +13,11 @@ async function getAccessToken() {
 
     try {
         const response = await fetch(url, {
-            method: "POST",  // POST method because we're sending data to get the token
+            method: "POST",
             headers: {
-                "Content-Type": "application/x-www-form-urlencoded", // Content-Type for sending URL-encoded form data
+                "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: credentials, // Pass URLSearchParams to body
+            body: credentials,
         });
         const data = await response.json();
         if (data.access_token) {
@@ -33,34 +33,38 @@ async function getAccessToken() {
 
 // Event listener for flight search form submission
 document.getElementById('flight-search-form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent the form from reloading the page
+    event.preventDefault();
     const origin = document.getElementById('origin').value;
     const destination = document.getElementById('destination').value;
     const departureDate = document.getElementById('departure').value;
-    searchFlights(origin, destination, departureDate); // Call the searchFlights function
+    const adults = document.getElementById('adults').value;
+    const children = document.getElementById('children').value;
+    searchFlights(origin, destination, departureDate, adults, children);
 });
 
 // Function to search flights based on user input
-async function searchFlights(origin, destination, departureDate) {
-    const url = "https://test.api.amadeus.com/v2/shopping/flight-offers"; // URL without query string
-
-    const requestData = {
+async function searchFlights(origin, destination, departureDate, adults, children) {
+    const url = new URL("https://test.api.amadeus.com/v2/shopping/flight-offers");
+    const params = {
         originLocationCode: origin,
         destinationLocationCode: destination,
         departureDate: departureDate,
-        adults: 1,
+        adults: adults,
+        children: children,
         travelClass: "ECONOMY",
+        nonStop: "false",
         currencyCode: "USD",
+        maxPrice: "500",
+        max: "10"
     };
+    url.search = new URLSearchParams(params).toString();
 
     try {
         const response = await fetch(url, {
-            method: "POST",  // POST method because you're sending data to request flight offers
+            method: "GET",
             headers: {
-                "Content-Type": "application/json", // Sending JSON data
-                Authorization: `Bearer ${accessToken}`, // Authorization header with the token
-            },
-            body: JSON.stringify(requestData), // Send the requestData as JSON
+                Authorization: `Bearer ${accessToken}`,
+            }
         });
 
         if (!response.ok) {
@@ -69,7 +73,7 @@ async function searchFlights(origin, destination, departureDate) {
 
         const data = await response.json();
         console.log("Flight data fetched successfully:", data);
-        displayFlightResults(data); // Display the flight results
+        displayFlightResults(data);
     } catch (error) {
         console.error("Error searching flights:", error);
     }
@@ -78,7 +82,7 @@ async function searchFlights(origin, destination, departureDate) {
 // Function to display flight results on the page
 function displayFlightResults(data) {
     const resultsDiv = document.getElementById("flight-results");
-    resultsDiv.innerHTML = ""; // Clear previous results
+    resultsDiv.innerHTML = "";
 
     if (data && data.data && data.data.length > 0) {
         const sortedOffers = data.data.sort((a, b) => parseFloat(a.price.total) - parseFloat(b.price.total));
@@ -107,6 +111,3 @@ function displayFlightResults(data) {
 
 // Fetch access token when the script loads
 getAccessToken();
-
-
-
