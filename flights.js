@@ -4,12 +4,65 @@ let accessToken = "";
 
 // Airline website mapping
 const airlineWebsites = {
+    // North American Airlines
     AA: "https://www.aa.com", // American Airlines
     DL: "https://www.delta.com", // Delta Airlines
     UA: "https://www.united.com", // United Airlines
+    B6: "https://www.jetblue.com", // JetBlue Airways
+    AC: "https://www.aircanada.com", // Air Canada
+    WN: "https://www.southwest.com", // Southwest Airlines
+    NK: "https://www.spirit.com", // Spirit Airlines
+    AS: "https://www.alaskaair.com", // Alaska Airlines
+    F9: "https://www.flyfrontier.com", // Frontier Airlines
+    HA: "https://www.hawaiianairlines.com", // Hawaiian Airlines
+
+    // European Airlines
     BA: "https://www.britishairways.com", // British Airways
-    // Add more mappings as needed
+    AF: "https://www.airfrance.com", // Air France
+    LH: "https://www.lufthansa.com", // Lufthansa
+    KL: "https://www.klm.com", // KLM Royal Dutch Airlines
+    IB: "https://www.iberia.com", // Iberia
+    U2: "https://www.easyjet.com", // EasyJet
+    FR: "https://www.ryanair.com", // Ryanair
+    LO: "https://www.lot.com", // LOT Polish Airlines
+    AZ: "https://www.itaspa.com", // ITA Airways (formerly Alitalia)
+    LX: "https://www.swiss.com", // Swiss International Air Lines
+
+    // Asian Airlines
+    SQ: "https://www.singaporeair.com", // Singapore Airlines
+    CX: "https://www.cathaypacific.com", // Cathay Pacific Airways
+    NH: "https://www.ana.co.jp", // ANA (All Nippon Airways)
+    JL: "https://www.jal.co.jp", // Japan Airlines
+    KE: "https://www.koreanair.com", // Korean Air
+    OZ: "https://www.flyasiana.com", // Asiana Airlines
+    TG: "https://www.thaiairways.com", // Thai Airways
+    MH: "https://www.malaysiaairlines.com", // Malaysia Airlines
+
+    // Middle Eastern Airlines
+    EK: "https://www.emirates.com", // Emirates
+    QR: "https://www.qatarairways.com", // Qatar Airways
+    EY: "https://www.etihad.com", // Etihad Airways
+    WY: "https://www.omanair.com", // Oman Air
+    RJ: "https://www.rj.com", // Royal Jordanian Airlines
+
+    // Australian Airlines
+    QF: "https://www.qantas.com", // Qantas Airways
+    VA: "https://www.virginaustralia.com", // Virgin Australia
+
+    // African Airlines
+    ET: "https://www.ethiopianairlines.com", // Ethiopian Airlines
+    MS: "https://www.egyptair.com", // EgyptAir
+    KQ: "https://www.kenya-airways.com", // Kenya Airways
+
+    // Low-Cost Airlines
+    VY: "https://www.vueling.com", // Vueling Airlines
+    G4: "https://www.allegiantair.com", // Allegiant Air
+    W6: "https://wizzair.com", // Wizz Air
+    PC: "https://www.flypgs.com", // Pegasus Airlines
+    SY: "https://www.suncountry.com", // Sun Country Airlines
+    F9: "https://www.flyfrontier.com", // Frontier Airlines
 };
+
 
 // Function to fetch access token
 async function getAccessToken() {
