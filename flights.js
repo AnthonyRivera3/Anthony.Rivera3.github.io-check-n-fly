@@ -1,6 +1,7 @@
 const API_KEY = "XfOTmlIO5vADAxyv87F2obUSRcy84qq2";
 const API_SECRET = "X3yjzEGmyUB9vNeo";
 let accessToken = "";
+let airports = []; // Cache for airports data
 
 // Function to fetch access token
 async function getAccessToken() {
@@ -23,6 +24,7 @@ async function getAccessToken() {
         if (data.access_token) {
             console.log("Access token fetched successfully.");
             accessToken = data.access_token;
+            fetchAirports(); // Fetch airports after getting the token
         } else {
             console.error("Failed to fetch access token:", data);
         }
@@ -31,16 +33,26 @@ async function getAccessToken() {
     }
 }
 
-// Example airports data for autocomplete
-const airports = [
-    { code: "JFK", name: "John F. Kennedy International Airport" },
-    { code: "LAX", name: "Los Angeles International Airport" },
-    { code: "CDG", name: "Charles de Gaulle Airport" },
-    { code: "SFO", name: "San Francisco International Airport" },
-    // Add more airports as needed
-];
+// Fetch airports data from an API or local source
+async function fetchAirports() {
+    try {
+        // This URL should point to an API endpoint for airports data, or you can use a local JSON file
+        const response = await fetch('API_URL_FOR_AIRPORTS', {
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        if (!response.ok) throw new Error('Failed to fetch airports');
+        const data = await response.json();
+        airports = data.airports; // Adjust this according to the actual API response
+        console.log("Airports fetched successfully.");
+    } catch (error) {
+        console.error('Error fetching airports:', error);
+        airports = []; // Fallback to empty list on error
+    }
+}
 
-// Setup autocomplete functionality
 function setupAutocomplete(inputElement, suggestionsElement) {
     inputElement.addEventListener('input', function() {
         const value = this.value.toUpperCase();
@@ -55,8 +67,8 @@ function setupAutocomplete(inputElement, suggestionsElement) {
             const div = document.createElement('div');
             div.textContent = `${airport.code} - ${airport.name}`;
             div.addEventListener('click', () => {
-                inputElement.value = airport.code; // Set the input to the selected airport code
-                suggestionsElement.innerHTML = ''; // Clear suggestions
+                inputElement.value = airport.code;
+                suggestionsElement.innerHTML = '';
             });
             suggestionsElement.appendChild(div);
         });
@@ -69,7 +81,18 @@ function setupAutocomplete(inputElement, suggestionsElement) {
     });
 }
 
-setupAutocomplete(document.getElementById('origin'), document.getElementById('originSuggestions'));
-setupAutocomplete(document.getElementById('destination'), document.getElementById('destinationSuggestions'));
+document.getElementById('origin').addEventListener('focus', () => {
+    if (airports.length === 0) {
+        fetchAirports();
+    }
+    setupAutocomplete(document.getElementById('origin'), document.getElementById('originSuggestions'), airports);
+});
+document.getElementById('destination').addEventListener('focus', () => {
+    if (airports.length === 0) {
+        fetchAirports();
+    }
+    setupAutocomplete(document.getElementById('destination'), document.getElementById('destinationSuggestions'), airports);
+});
 
-// Remainder of your JavaScript code...
+// Fetch access token when the script loads
+getAccessToken();
