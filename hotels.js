@@ -44,59 +44,56 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     async function fetchHotelOffers(hotelIds, checkInDate, checkOutDate, adults) {
-        const url = `https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=${hotelIds.join(
-            ","
-        )}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&roomQuantity=1&currency=USD`;
+        const url = `https://test.api.amadeus.com/v3/shopping/hotel-offers?hotelIds=${hotelIds.join(',')}&checkInDate=${checkInDate}&checkOutDate=${checkOutDate}&adults=${adults}&roomQuantity=1&currency=USD`;
 
-        console.log("API Request URL:", url); // Log for debugging
+        console.log("API Request URL:", url);
 
         try {
             const response = await fetch(url, {
-                method: "GET",
+                method: 'GET',
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                 },
             });
 
+            const data = await response.json();
+
             if (!response.ok) {
-                const errorDetails = await response.json();
-                console.error("API Error Details:", errorDetails);
-                throw new Error(`Failed to fetch hotels: ${response.statusText}`);
+                console.error("API Error Details:", data.errors);
+                throw new Error(`Failed to fetch hotels: ${response.status}`);
             }
 
-            const data = await response.json();
-            displayHotelOffers(data);
+            console.log("Hotel Data:", data); // Log data for debugging
+            displayHotelOffers(data); // Ensure this function is defined
         } catch (error) {
-            console.error("Error:", error);
-            resultsDiv.innerHTML = `<p>Error loading hotels: ${error.message}</p>`;
+            console.error('Error:', error.message);
+            resultsDiv.innerHTML = `<p>Error: ${error.message}</p>`;
         }
     }
 
     function displayHotelOffers(data) {
-        resultsDiv.innerHTML = "";
+    resultsDiv.innerHTML = '';  // Clear previous results
 
-        if (data.data && data.data.length > 0) {
-            data.data.forEach((hotel) => {
-                const address = hotel.hotel.address.lines
-                    ? hotel.hotel.address.lines.join(", ")
-                    : "No address available";
-                const cityName = hotel.hotel.address.cityName || "Unknown city";
+    if (data.data && data.data.length > 0) {
+        data.data.forEach(hotel => {
+            const address = hotel.hotel.address?.lines ? hotel.hotel.address.lines.join(', ') : 'No address available';
+            const cityName = hotel.hotel.address?.cityName || 'Unknown city';
 
-                const hotelDiv = document.createElement("div");
-                hotelDiv.className = "hotel-card p-3 mb-3 border rounded";
-                hotelDiv.innerHTML = `
-                    <h4>${hotel.hotel.name}</h4>
-                    <p><strong>Address:</strong> ${address}, ${cityName}</p>
-                    <p><strong>Available:</strong> ${
-                        hotel.available ? "Yes" : "No"
-                    }</p>
-                `;
-                resultsDiv.appendChild(hotelDiv);
-            });
-        } else {
-            resultsDiv.innerHTML = "<p>No hotels found.</p>";
-        }
+            const hotelDiv = document.createElement('div');
+            hotelDiv.className = 'hotel-card p-3 mb-3 border rounded';
+            hotelDiv.innerHTML = `
+                <h4>${hotel.hotel.name}</h4>
+                <p><strong>Address:</strong> ${address}, ${cityName}</p>
+                <p><strong>Available:</strong> ${hotel.available ? 'Yes' : 'No'}</p>
+                <p><strong>Price:</strong> ${hotel.offers[0].price.total} ${hotel.offers[0].price.currency}</p>
+            `;
+            resultsDiv.appendChild(hotelDiv);
+        });
+    } else {
+        resultsDiv.innerHTML = '<p>No hotels found.</p>';
     }
+}
+
 
     async function getAccessToken() {
         const tokenUrl = "https://test.api.amadeus.com/v1/security/oauth2/token";
