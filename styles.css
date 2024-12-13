@@ -151,32 +151,34 @@ footer a:hover {
 }
 
 .card {
-  background-color: #000 !important; /* Black background */
-  color: #ff4500 !important; /* Orange text */
+  background-color: #141b24 !important; /* Black background */
+  color: #ffffff !important; /* Orange text */
   border: none !important;
   margin-top: 20px;
 }
 
 .card-header {
-  background-color: #000 !important; /* Black background */
-  color: #ff4500 !important; /* Orange text */
+  background-color: #141b24 !important; /* Black background */
+  color: #ffffff !important; /* Orange text */
   font-weight: bold !important;
   border-bottom: 1px solid #ff4500 !important;
 }
 
 .card-body {
-  color: #ff4500 !important; /* Orange text for card body */
+  color: #ffffff !important; /* Orange text for card body */
 }
 
 .list-group-item {
-  background-color: #000 !important; /* Black background */
+  background-color: #141b24 !important; /* Black background */
   color: #ff4500 !important; /* Orange text */
   border: none !important;
 }
 
 /* Improve visibility against the background */
 .card h5.card-title {
-  color: #ff4500 !important;
+  color: #ffffff !important;
+  text-decoration: underline;
+  font-weight: bold
 }
 
 
