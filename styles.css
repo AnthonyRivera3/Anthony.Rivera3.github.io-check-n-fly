@@ -159,7 +159,7 @@ footer a:hover {
 
 .card-header {
   background-color: #141b24 !important; /* Black background */
-  color: #ffffff !important; /* Orange text */
+  color: #ff4500 !important; /* Orange text */
   font-weight: bold !important;
   border-bottom: 1px solid #ff4500 !important;
 }
@@ -170,7 +170,7 @@ footer a:hover {
 
 .list-group-item {
   background-color: #141b24 !important; /* Black background */
-  color: #ff4500 !important; /* Orange text */
+  color: #ffffff !important; /* Orange text */
   border: none !important;
 }
 
