@@ -3,29 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
+    <title>Flight Search</title>
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="public\others\styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { 
-            padding-top: 100px; /* Adjust if navbar is taller */
-            background-image: url('indexpicture.png');
-            background-size: cover; /* Ensures that the background covers the entire viewport */
+            padding-top: 100px;
+            background-image: url('flightpicture.png');
+            background-size: cover;
             background-position: center center;
             background-attachment: fixed;
-            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-repeat: no-repeat;
         }
         .floating-btn {
-            position: fixed; /* Make button floating */
-            top: 80px; /* Position right below the navbar */
-            right: 20px; /* Maintain a little distance from the edge */
-            z-index: 1030; /* Ensure it's above most other elements */
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 1030;
+        }
+        #loadingIndicator {
+            display: none;
+            text-align: center;
+            font-size: 1.2rem;
+            color: #ff4500;
         }
     </style>
 </head>
 <body>
-    <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="https://anthonyrivera3.github.io/Anthony.Rivera3.github.io-check-n-fly/index.html">Check'n'Fly</a>
@@ -57,11 +62,32 @@
         </div>
     </nav>
 
-    <!-- Floating Button -->
-    <a href="https://anthonyrivera3.github.io/Anthony.Rivera3.github.io-check-n-fly/about.html" class="btn btn-primary floating-btn">Learn More</a>
+    <div style="padding: 20px;">
+        <h1>Flight Search</h1>
+        <form id="flight-search-form">
+            <label for="origin">Current Location:</label>
+            <input type="text" id="origin" name="origin" placeholder="e.g., JFK" required>
+            <br><br>
+            <label for="destination">Destination:</label>
+            <input type="text" id="destination" name="destination" placeholder="e.g., LAX" required>
+            <br><br>
+            <label for="departure">Departure Date:</label>
+            <input type="date" id="departure" name="departure" required>
+            <br><br>
+            <label for="adults">Adults:</label>
+            <input type="number" id="adults" name="adults" min="1" max="9" required>
+            <br><br>
+            <label for="children">Children:</label>
+            <input type="number" id="children" name="children" min="0" max="8" required>
+            <br><br>
+            <button type="submit">Search Flights</button>
+        </form>
 
-    <!-- Bootstrap JavaScript -->
+        <div id="loadingIndicator">Loading...</div>
+        <div id="flight-results"></div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="public\flights\flights.js"></script>
 </body>
 </html>
-

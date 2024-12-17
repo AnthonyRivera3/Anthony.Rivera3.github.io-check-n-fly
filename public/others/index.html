@@ -3,21 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Search</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Homepage</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="public\others\styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { 
-            padding-top: 100px;
-            background-image: url('hotelpicture.png');
-            background-size: cover;
+            padding-top: 100px; /* Adjust if navbar is taller */
+            background-image: url('indexpicture.png');
+            background-size: cover; /* Ensures that the background covers the entire viewport */
             background-position: center center;
             background-attachment: fixed;
-            background-repeat: no-repeat;
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+        }
+        .floating-btn {
+            position: fixed; /* Make button floating */
+            top: 80px; /* Position right below the navbar */
+            right: 20px; /* Maintain a little distance from the edge */
+            z-index: 1030; /* Ensure it's above most other elements */
         }
     </style>
 </head>
 <body>
+    <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="https://anthonyrivera3.github.io/Anthony.Rivera3.github.io-check-n-fly/index.html">Check'n'Fly</a>
@@ -49,33 +57,11 @@
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1>Search Hotels</h1>
-        <form id="hotel-search-form" class="mt-3">
-            <div class="mb-3">
-                <label for="hotelIds" class="form-label">Hotel IDs (comma-separated):</label>
-                <input type="text" id="hotelIds" class="form-control" placeholder="Enter hotel IDs (e.g., MCLONGHM)">
-            </div>
-            <div class="mb-3">
-                <label for="checkInDate" class="form-label">Check-in Date:</label>
-                <input type="date" id="checkInDate" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="checkOutDate" class="form-label">Check-out Date:</label>
-                <input type="date" id="checkOutDate" class="form-control">
-            </div>
-            <div class="mb-3">
-                <label for="adults" class="form-label">Number of Adults:</label>
-                <input type="number" id="adults" class="form-control" min="1" max="9" placeholder="Enter number of adults">
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
-        <div id="results" class="mt-3">
-            <!-- Results will be displayed here -->
-        </div>
-    </div>
+    <!-- Floating Button -->
+    <a href="https://anthonyrivera3.github.io/Anthony.Rivera3.github.io-check-n-fly/about.html" class="btn btn-primary floating-btn">Learn More</a>
 
-    <script src="hotels.js"></script>
+    <!-- Bootstrap JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
+
