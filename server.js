@@ -1,95 +1,84 @@
 // server.js
-// Load environment variables from .env file (such as API keys and secrets)
-// require('dotenv').config();
+require('dotenv').config({ path: './API.env' });  // Load API.env file
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
-// Import necessary modules for the server
-// const express = require('express'); // Express framework to handle routing and requests
-// const mysql = require('mysql2'); // MySQL module to interact with the MySQL database
-// const axios = require('axios'); // Axios library for making HTTP requests to external APIs
+const app = express();
+const PORT = process.env.PORT || 3000; // Use the port from .env or default to 3000
 
-// Initialize the Express app
-// const app = express();
-// const port = 5000;  // Define the port the server will run on
+// Middleware setup
+app.use(bodyParser.json());
+app.use(cors());
+app.use(express.static('public')); // Serve frontend files
 
-// Middleware to parse incoming JSON requests
-// app.use(express.json());
+// Connect to SQLite3 database (file-based)
+const db = new sqlite3.Database('./flightsDB.sqlite', (err) => {
+  if (err) {
+    console.error('Error connecting to SQLite3:', err.message);
+  } else {
+    console.log('Connected to SQLite3 database.');
+  }
+});
 
-// MySQL connection setup to connect to the flight_search database
-// const db = mysql.createConnection({
-//     host: 'localhost', // Host where MySQL is running (e.g., localhost or an external server)
-//     user: 'root',  // Replace with your MySQL username
-//     password: '',  // Replace with your MySQL password
-//     database: 'flight_search'  // The name of the MySQL database
-// });
+// Create the flight_offers table if it doesn't exist
+db.run(
+  `CREATE TABLE IF NOT EXISTS flight_offers (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    origin TEXT,
+    destination TEXT,
+    departure_date TEXT,
+    adults INTEGER,
+    children INTEGER,
+    price REAL
+  )`,
+  (err) => {
+    if (err) {
+      console.error(err.message);
+    } else {
+      console.log("Table 'flight_offers' is ready.");
+    }
+  }
+);
 
-// Function to fetch access token for Amadeus API using OAuth2
-// async function getAccessToken() {
-//     // Make a POST request to Amadeus API to get an OAuth2 token
-//     const response = await axios.post('https://test.api.amadeus.com/v1/security/oauth2/token', new URLSearchParams({
-//         grant_type: 'client_credentials',  // The type of OAuth flow
-//         client_id: process.env.API_KEY,    // API key (client ID) from the .env file
-//         client_secret: process.env.API_SECRET // API secret (client secret) from the .env file
-//     }));
-    
-//     // Return the access token from the response
-//     return response.data.access_token;
-// }
+// Route to add a new flight offer
+app.post('/add-flight', (req, res) => {
+  const { origin, destination, departure_date, adults, children, price } = req.body;
 
-// Define the flight search endpoint for POST requests
-// app.post('/search-flights', async (req, res) => {
-//     // Extract necessary data from the request body
-//     const { origin, destination, departureDate, adults, children } = req.body;
-    
-//     try {
-//         // Get the access token for authenticating the request to Amadeus API
-//         const accessToken = await getAccessToken();
+  const query = `
+    INSERT INTO flight_offers (origin, destination, departure_date, adults, children, price)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+  
+  db.run(query, [origin, destination, departure_date, adults, children, price], function (err) {
+    if (err) {
+      console.error('Error inserting data:', err.message);
+      return res.status(500).send('Error adding flight data');
+    }
+    res.send('Flight data added successfully!');
+  });
+});
 
-//         // Build the URL for the flight search request to Amadeus API
-//         const url = `https://test.api.amadeus.com/v2/shopping/flight-offers?originLocationCode=${origin}&destinationLocationCode=${destination}&departureDate=${departureDate}&adults=${adults}&children=${children}&travelClass=ECONOMY&currencyCode=USD&maxPrice=500&max=10`;
+// Route to search for flights
+app.post('/search-flights', (req, res) => {
+  const { origin, destination, departure_date } = req.body;
 
-//         // Make a GET request to the Amadeus API using the access token in the authorization header
-//         const response = await axios.get(url, {
-//             headers: {
-//                 'Authorization': `Bearer ${accessToken}`  // Include the access token in the Authorization header
-//             }
-//         });
+  const query = `
+    SELECT * FROM flight_offers
+    WHERE origin = ? AND destination = ? AND departure_date = ?
+  `;
 
-//         // Extract the flight offers data from the response
-//         const flightOffers = response.data.data;
+  db.all(query, [origin, destination, departure_date], (err, rows) => {
+    if (err) {
+      console.error('Error querying flights:', err.message);
+      return res.status(500).send('Error querying flights');
+    }
+    res.json(rows);
+  });
+});
 
-//         // Iterate over each flight offer and save it to the MySQL database
-//         flightOffers.forEach(offer => {
-//             // Insert each flight offer into the MySQL database
-//             db.query(
-//                 'INSERT INTO flights (origin, destination, departure_date, adults, children, flight_details, price) VALUES (?, ?, ?, ?, ?, ?, ?)', 
-//                 [
-//                     origin,               // Origin location (e.g., airport code)
-//                     destination,          // Destination location (e.g., airport code)
-//                     departureDate,       // Departure date
-//                     adults,               // Number of adults
-//                     children,             // Number of children
-//                     JSON.stringify(offer), // Flight offer details in JSON format
-//                     offer.price.total      // Total price of the flight
-//                 ],
-//                 (err, results) => {
-//                     if (err) {
-//                         console.error('Error inserting into database:', err);  // Log any database insertion errors
-//                     }
-//                 }
-//             );
-//         });
-
-//         // Send the flight offers back to the client (frontend) as a JSON response
-//         res.json(flightOffers);
-//     } catch (error) {
-//         // Handle any errors that occur during the flight search process
-//         console.error('Error searching flights:', error);  // Log the error
-//         // Respond with a 500 status and a message indicating an error occurred
-//         res.status(500).json({ message: 'Error fetching flight data' });
-//     }
-// });
-
-// Start the server and listen for incoming HTTP requests on the specified port
-// app.listen(port, () => {
-//     console.log(`Backend server running on http://localhost:${port}`);  // Log a message indicating the server is running
-// });
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
